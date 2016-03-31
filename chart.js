@@ -324,7 +324,7 @@ function creationGraph(info) {
 
 	dataGraph = new google.visualization.DataTable();
 	dataGraph.addColumn('string', 'Mois');
-	dataGraph.addColumn('number', 'Nb de crimes');
+	dataGraph.addColumn('number', 'Nb crimes');
 	dataGraph.addRows([
 	                   ['Juin', parseInt(info.June)],
 	                   ['Juillet', parseInt(info.July)],
