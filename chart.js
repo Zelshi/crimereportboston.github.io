@@ -1,7 +1,3 @@
-//Cette fonction va  permettre d'initiliaser les données
-//dans une DataTable pour la visualisation
-
-
 var dataTableChart ;
 var dataTableGraphe;
 var regroupementNombre;
@@ -13,7 +9,11 @@ var tabCrime;
 var dataBubbleChart;
 var pieOptions;
 var options;
-
+var optionsBubble;
+var dataGraph;
+var chartBubble;
+var columnChart;
+var line;
 var Monday = new Array(59);
 
 for (j=0;j<59;j++) {
@@ -64,7 +64,7 @@ function initData(){
 		// Création d'une DataTable compatible pour Google Charts
 		dataTableChart = new google.visualization.DataTable();
 		//dataTableGraphe = new google.visualization.DataTable();
-		dataTableChart.addColumn('string', 'Type');
+		dataTableChart.addColumn('string', 'TypeCrime');
 		dataTableChart.addColumn('date', 'DateCrime'); // date americaine  mm/dd/yyyy hh:mm
 		dataTableChart.addColumn('string', 'Lieu'); 
 		dataTableChart.addColumn('string', 'jour'); // jour du crime 
@@ -135,7 +135,7 @@ function initData(){
 				                           parseInt(data2.features[i].properties.PNTCNT)
 				                           ]]);
 			}
-		//	go();
+			//	go();
 
 		});
 
@@ -161,14 +161,13 @@ function initData(){
 				                          parseInt(data.features[i].properties.PNTCNT)
 				                          ]]);
 			}
-		
+
 		});
 
 	});
 }
 
 function afficherPie(){
-
 	// Calcul d'agrégat sur le type de crime : COUNT
 	regroupementNombre1 = google.visualization.data.group(
 			dataTableChart,
@@ -176,15 +175,51 @@ function afficherPie(){
 			[{'column': 0, 'aggregation': google.visualization.data.count, 'type': 'number'}]
 	);
 
-	//Ce graphe nous permettra de comparer le taux de crimes commis par mois
 
-	pie = new google.visualization.PieChart(document.getElementById('choixUser'));
+	regroupementNombre1.setColumnLabel(0, "Type de Crime")
+	regroupementNombre1.setColumnLabel(1, "Nombre de Crimes");
 
-	pieOptions = {
-			title: 'Taux de crimes '
-	};
-	pie.draw(regroupementNombre1, pieOptions);
+	//On remet à jour dans le cas ou d'autres choix (courbe, columnChart, etc) ont été fait avant
+	document.getElementById('choixUser').innerHTML ="<div style=\"margin-top: 100px; text-align: center;\" id = \"filter_div\"></div><div id = \"chart_div\"></div>";
+	pie = new google.visualization.Dashboard(document.getElementById('choixUser'));
+
+	var donutRangeSlider = new google.visualization.ControlWrapper({
+		'controlType': 'NumberRangeFilter',
+		'containerId': 'filter_div',
+		'options': {
+			'filterColumnLabel': 'Nombre de Crimes'
+		}
+	})
+
+
+	// Create a pie chart, passing some options
+	var pieChart = new google.visualization.ChartWrapper({
+		'chartType': 'PieChart',
+		'containerId': 'chart_div',
+		'options': {
+			'width': 700,
+			'height': 500,
+			'pieSliceText': 'value',
+			'legend': 'right'
+		}
+	});
+	pie.bind(donutRangeSlider, pieChart);
+
+	// Draw the dashboard.
+	pie.draw(regroupementNombre1);
+
 }
+
+
+
+////Ce graphe nous permettra de comparer le taux de crimes commis par mois
+
+
+//pieOptions = {
+//title: 'Taux de crimes '
+//};
+//pie.draw(regroupementNombre1, pieOptions);
+//}
 
 function afficherGraphe(){
 	dataChart = google.visualization.arrayToDataTable([tabCrime,
@@ -198,10 +233,10 @@ function afficherGraphe(){
 
 	                                                   ], false );
 
-	chart = new google.visualization.ColumnChart(document.getElementById("choixUser"));
+	columnChart = new google.visualization.ColumnChart(document.getElementById("choixUser"));
 
 
-	 options = {
+	options = {
 			width: 700,
 			height: 700,
 			title: 'Nombre de crimes par type en fonction du jour de la semaine',
@@ -209,15 +244,15 @@ function afficherGraphe(){
 			bar: { groupWidth: '75%' },
 			isStacked: true,
 	};
-	chart.draw(dataChart, options);
+	columnChart.draw(dataChart, options);
 ///////////////////////////////////////////////////////////
 
 	//regroupement pour déterminer les zones les plus dangereuses
 }
 
 function afficherCourbe(){
-	
-	lineChart = new google.charts.Line(document.getElementById('choixUser'));
+
+	line = new google.charts.Line(document.getElementById('choixUser'));
 
 	lineOptions = {
 			width : 700,
@@ -226,13 +261,13 @@ function afficherCourbe(){
 			curveType: 'function',
 			legend: { position: 'bottom' }
 	};
-	lineChart.draw(dataTableGraphe, lineOptions);
+	line.draw(dataTableGraphe, lineOptions);
 
 }
 
 //Dessine le bubble chart
 function afficherBubble() {
-	var options = {
+	optionsBubble = {
 			width: 800,
 			title: 'Comparaison entre le nombre de crimes d\'une zone par rapport à la taille de la zone (en Acres)',
 			hAxis: {title: 'Taille de la zone (en Acres)'},
@@ -241,25 +276,25 @@ function afficherBubble() {
 			colorAxis: {colors: ['yellow', 'red']}
 	};
 
-	var chart = new google.visualization.BubbleChart(document.getElementById('choixUser'));
-	chart.draw(dataBubbleChart, options);
+	chartBubble = new google.visualization.BubbleChart(document.getElementById('choixUser'));
+	chartBubble.draw(dataBubbleChart, options);
 }
 
 //Création du graphique du tooltip
 function creationGraph(info) {
 	"use strict";
 
-	var data = new google.visualization.DataTable();
-	data.addColumn('string', 'Mois');
-	data.addColumn('number', 'Taux');
-	data.addRows([
-	              ['Juin', parseInt(info.June)],
-	              ['Juillet', parseInt(info.July)],
-	              ['Août', parseInt(info.August)]
-	              ]);
+	dataGraph = new google.visualization.DataTable();
+	dataGraph.addColumn('string', 'Mois');
+	dataGraph.addColumn('number', 'Taux');
+	dataGraph.addRows([
+	                   ['Juin', parseInt(info.June)],
+	                   ['Juillet', parseInt(info.July)],
+	                   ['Août', parseInt(info.August)]
+	                   ]);
 
-	var chart = new google.visualization.LineChart(document.getElementById('graph'));
-	chart.draw(data,
+	lineChart = new google.visualization.LineChart(document.getElementById('graph'));
+	lineChart.draw(dataGraph,
 			{
 		'title': 'Evolution du nombre de crimes',
 		'width': 350,
@@ -270,12 +305,16 @@ function creationGraph(info) {
 }
 
 function afficherTableauDeBord(){
-	
+
 	//On affiche nos tableaux de bord 
 	document.getElementById("choix").style.visibility = "visible";
 	document.getElementById("choix").style.display = "";
 	//On elenve le tooltip et le pie est directement affiché ( c'est le choix par défaut)
 	document.getElementById("tooltip").style.visibility = "hidden";
+	//On remet à jour les 
+	document.getElementById("choix").children[0].checked = true;
+
+	document.getElementById("choixUser").style.display = "";
 	afficherPie();
 
 }
