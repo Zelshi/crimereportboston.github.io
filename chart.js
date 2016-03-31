@@ -337,7 +337,7 @@ function creationGraph(info) {
 		'title': 'Evolution du nombre de crimes',
 		'width': 350,
 		'height': 250,
-		'vAxis': { viewWindow: { min: 0, max: 3000 } },
+		'vAxis': { viewWindow: { min: 0, max: 1200 } },
 		'legend': { position: 'none' }
 			});
 }
