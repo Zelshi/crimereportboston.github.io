@@ -31,6 +31,9 @@ function initMap(){
 			onEachFeature: function( feature, layer ){
 				layer.on({
 					mouseover: function(e){
+						
+						if(layerLine)geoDep.resetStyle(layerLine);
+						
 						var layer = e.target,
 						prop=layer.feature.properties,
 						souris=e.originalEvent,
@@ -135,118 +138,60 @@ function initMap(){
 
 //	tableau contenant l'ensembles des INCIDENT_TYPE_DESCRIPTION
 
-	var Incident = ['Other' ,
-
-	                'Aggravated Assault',
-
-	                'Medical Assistance',
-
+	var Incident = ['Other','Aggravated Assault', 'Medical Assistance',
 	                'Towed',
-
 	                'Vandalism',
-
 	                'Investigate Person',
-
 	                'Property Found',
-
 	                'Sex Offender Registration',
-
 	                'Other Burglary',
-
 	                'Larceny',
-
 	                'Violations',
-
 	                'Residential Burglary',
-
 	                'Simple Assault',
-
 	                'Larceny From Motor Vehicle',
-
 	                'Warrant Arrests',
-
 	                'Counterfeiting',
-
 	                'Verbal Disputes',
-
 	                'Drug Violation',
-
 	                'Motor Vehicle Accident Response',
-
 	                'Auto Theft',
-
 	                'Explosives',
-
 	                'Property Lost',
-
 	                'Fraud',
-
 	                'Restraining Order Violations',
-
 	                'Investigate Property',
-
 	                'Police Service Incidents',
-
 	                'Disorderly Conduct',
-
 	                'Confidence Games',
-
 	                'Landlord Tenant Disputes',
-
 	                'Prisoner Related Incidents',
-
 	                'Evading Fare',
-
 	                'Robbery',
-
 	                'Missing Person Located',
-
 	                'Missing Person Reported',
-
 	                'License Plate Related Incidents',
-
 	                'Property Related Damage',
-
 	                'Service',
-
 	                'Fire Related Reports',
-
 	                'Recovered Stolen Property',
-
 	                'Auto Theft Recovery',
-
 	                'Operating Under the Influence',
-
 	                'Firearm Violations',
-
 	                'Ballistics',
-
 	                'Indecent Assault',
-
 	                'Search Warrants',
-
 	                'Offenses Against Child Family',
-
 	                'Homicide',
-
 	                'Assembly or Gathering Violations',
-
 	                'Commercial Burglary',
-
 	                'License Violation',
-
 	                'Liquor Violation',
-
 	                'Harbor Related Incidents',
-
 	                'Prostitution',
-
 	                'Criminal Harassment',
-
 	                'Embezzlement',
-
 	                'Firearm Discovery',
-
 	                'Rape and Attempted',
 	                'Arson']
 
