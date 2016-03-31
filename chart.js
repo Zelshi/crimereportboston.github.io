@@ -313,7 +313,6 @@ function afficherTableauDeBord(){
 	document.getElementById("tooltip").style.visibility = "hidden";
 	//On remet à jour les 
 	document.getElementById("choix").children[0].checked = true;
-
 	document.getElementById("choixUser").style.display = "";
 	afficherPie();
 
