@@ -1,6 +1,6 @@
-	var clusters;
-	var map;
-	var geoDep;
+var clusters;
+var map;
+var geoDep;
 function initMap(){
 
 //	Initialiser la carte
@@ -32,72 +32,77 @@ function initMap(){
 				layer.on({
 					mouseover: function(e){
 						var layer = e.target,
-							prop=layer.feature.properties,
-							souris=e.originalEvent,
-							tooltip=document.getElementById("tooltip");
-						
+						prop=layer.feature.properties,
+						souris=e.originalEvent,
+						tooltip=document.getElementById("tooltip");
+
 						layer.setStyle({
 							fillOpacity: 1,
 							color: "#000"
 						});
-						
+
 						// affichage des infos dans le tooltip
 						document.getElementById("Name").innerHTML= prop.Name;
 						document.getElementById("juin").innerHTML = prop.June;
-                        document.getElementById("juillet").innerHTML = prop.July;
-                        document.getElementById("aout").innerHTML = prop.August;
-					creationGraph(prop);
-					// Affichage du tooltip
-                    tooltip.style.display = "initial";
+						document.getElementById("juillet").innerHTML = prop.July;
+						document.getElementById("aout").innerHTML = prop.August;
+						creationGraph(prop);
+						// Affichage du tooltip
+						document.getElementById("choix").style.display= "none";
+						document.getElementById("choixUser").style.display= "none";
+						tooltip.style.visibility = "visible";
+					//	tooltip.style.display = "";
+						tooltip.style.display = "initial"
 
-                    // Déplacement du tooltip en fonction de la souris
-                    if (souris.pageY + 125 > window.innerHeight) {
-                        tooltip.style.top = souris.pageY - 250 + "px";
-                    } else {
-                        tooltip.style.top = souris.pageY - 125 + "px";
-                    }
-                    tooltip.style.left = souris.pageX + 10 + "px";
-                    
-                    // Graphique à mettre ici !
-                },
-                mouseout : function (e) {
-                   geoDep.resetStyle(e.target);
-                   // document.getElementById("tooltip").style.display = "none";
+
+						// Déplacement du tooltip en fonction de la souris
+						if (souris.pageY + 125 > window.innerHeight) {
+							tooltip.style.top = souris.pageY - 250 + "px";
+						} else {
+							tooltip.style.top = souris.pageY - 125 + "px";
+						}
+						tooltip.style.left = souris.pageX + 10 + "px";
+
+						// Graphique à mettre ici !
+					},
+					mouseout : function (e) {
+						geoDep.resetStyle(e.target);
+						// document.getElementById("tooltip").style.display = "none";
 					}
 				});
-				
+
 			}
 		}).addTo(map);
 	});
-	
+
 	function getColor(d) {
-	    return d <= 0 ? '#fee5d9' :
-	           d <= 615  ? '#fcae91' :
-	           d <= 1229  ? '#fb6a4a' :
-	           d <= 1844  ? '#de2d26' :
-	           d >= 1845   ? '#a50f15' : '#a50f15';
-	         
+		return d <= 0 ? '#fee5d9' :
+			d <= 615  ? '#fcae91' :
+				d <= 1229  ? '#fb6a4a' :
+					d <= 1844  ? '#de2d26' :
+						d >= 1845   ? '#a50f15' : '#a50f15';
+
 	}
-	
+
 	//Création légende
 	var legend = L.control({position: 'bottomright'});
 
 	legend.onAdd = function (map) {
 
-	    var div = L.DomUtil.create('div', 'info legend'),
-	        grades = [0, 615, 1229, 1844, 1845],
-	        labels = [];
-	    // loop through our density intervals and generate a label with a colored square for each interval
-	    for (var i = 0; i < grades.length; i++) {
-	        div.innerHTML +=
-	            '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' + grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-	    }
+		var div = L.DomUtil.create('div', 'info legend'),
+		grades = [0, 615, 1229, 1844, 1845],
+		labels = [];
+		// loop through our density intervals and generate a label with a colored square for each interval
+		for (var i = 0; i < grades.length; i++) {
+			div.innerHTML +=
+				'<i style="background:' + getColor(grades[i] + 1) + '"></i> ' + grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+		}
 
-	    return div;
+		return div;
 	};
 
 	legend.addTo(map);
-	
+
 //	Afficher les crimes sur la map
 	$.getJSON("incidents_crime_2015_2.geojson",function(data){
 
@@ -113,11 +118,11 @@ function initMap(){
 
 				//Affichage icone + pop up message après clique
 				return L.marker(latlng, {icon: smallIcon
-				
+
 				}).on('mouseover',function () {
 					this.bindPopup('<strong> Type de crime : </strong>' + feature.properties.INCIDENT_TYPE_DESCRIPTION + '<br/>' 
-						+ '<strong> Lieu </strong>: ' + feature.properties.STREETNAME + '<br/>' 
-						+ '<strong> Date : </strong> ' + feature.properties.FROMDATE).openPopup();
+							+ '<strong> Lieu </strong>: ' + feature.properties.STREETNAME + '<br/>' 
+							+ '<strong> Date : </strong> ' + feature.properties.FROMDATE).openPopup();
 				});			
 			}
 		});
@@ -277,43 +282,43 @@ function initMap(){
 
 
 
-	function changement(type){		
-		//Retire les clusters existant
-		map.removeLayer(clusters);
+function changement(type){		
+	//Retire les clusters existant
+	map.removeLayer(clusters);
 
-		var promise = $.getJSON("incidents_crime_2015_2.geojson");
-		promise.then(function(data) {
+	var promise = $.getJSON("incidents_crime_2015_2.geojson");
+	promise.then(function(data) {
 
-			var selected = L.geoJson(data, {
-				// on creer le filtre
-				filter: function(feature, layer) {
-					return feature.properties.INCIDENT_TYPE_DESCRIPTION == type;
-
-
-				},
-				//on cree les icones 
-				pointToLayer: function(feature, latlng) {
-					var smallIcon = L.icon({ 	                
-						iconUrl: "icons/"+ feature.properties.INCIDENT_TYPE_DESCRIPTION + '.png',
-						iconSize: [30, 30]
-					});
+		var selected = L.geoJson(data, {
+			// on creer le filtre
+			filter: function(feature, layer) {
+				return feature.properties.INCIDENT_TYPE_DESCRIPTION == type;
 
 
-					return L.marker(latlng, {icon: smallIcon
-						
-					}).on('mouseover',function () {
-						this.bindPopup('<strong> Type de crime : </strong>' + feature.properties.INCIDENT_TYPE_DESCRIPTION + '<br/>' 
+			},
+			//on cree les icones 
+			pointToLayer: function(feature, latlng) {
+				var smallIcon = L.icon({ 	                
+					iconUrl: "icons/"+ feature.properties.INCIDENT_TYPE_DESCRIPTION + '.png',
+					iconSize: [30, 30]
+				});
+
+
+				return L.marker(latlng, {icon: smallIcon
+
+				}).on('mouseover',function () {
+					this.bindPopup('<strong> Type de crime : </strong>' + feature.properties.INCIDENT_TYPE_DESCRIPTION + '<br/>' 
 							+ '<strong> Lieu </strong>: ' + feature.properties.STREETNAME + '<br/>' 
 							+ '<strong> Date : </strong> ' + feature.properties.FROMDATE).openPopup();
-					});			
-				}
-			});
-			//Regrouper la selection des crimes
-			clusters2 = L.markerClusterGroup();
-			clusters2.addLayer(selected);
-			map.addLayer(clusters2);
-
+				});			
+			}
 		});
-	}   
+		//Regrouper la selection des crimes
+		clusters2 = L.markerClusterGroup();
+		clusters2.addLayer(selected);
+		map.addLayer(clusters2);
+
+	});
+}   
 
 
