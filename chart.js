@@ -273,12 +273,16 @@ function afficherCourbe(){
 
 
 function metEnValeurZone(){
-	var zoneMV = line.getSelection()[0];
-	if(zoneMV){
-		//On va récupérer le nom de ma ville
-		metEnValeur(dataTableGraphe.getValue(zoneMV.row, 0));
-	}else
-		return
+	if(line.getSelection().length!=0){
+		if(line.getSelection()[0].row!=null){
+			var zoneMV = line.getSelection()[0];
+			if(zoneMV){
+				//On va récupérer le nom de ma ville
+				metEnValeur(dataTableGraphe.getValue(zoneMV.row, 0));
+			}else
+				return
+		}
+	}
 }
 
 function metEnValeur(zoneMV){
@@ -324,7 +328,7 @@ function creationGraph(info) {
 
 	dataGraph = new google.visualization.DataTable();
 	dataGraph.addColumn('string', 'Mois');
-	dataGraph.addColumn('number', 'Nb crimes');
+	dataGraph.addColumn('number', 'Taux');
 	dataGraph.addRows([
 	                   ['Juin', parseInt(info.June)],
 	                   ['Juillet', parseInt(info.July)],
@@ -337,7 +341,7 @@ function creationGraph(info) {
 		'title': 'Evolution du nombre de crimes',
 		'width': 350,
 		'height': 250,
-		'vAxis': { viewWindow: { min: 0, max: 2000 } },
+		'vAxis': { viewWindow: { min: 0, max: 3000 } },
 		'legend': { position: 'none' }
 			});
 }
