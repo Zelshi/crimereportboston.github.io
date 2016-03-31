@@ -15,6 +15,7 @@ var chartBubble;
 var columnChart;
 var line;
 var Monday = new Array(59);
+var layer;
 
 for (j=0;j<59;j++) {
 	Monday[j]=0;
@@ -263,6 +264,43 @@ function afficherCourbe(){
 	};
 	line.draw(dataTableGraphe, lineOptions);
 
+	google.visualization.events.addListener(line, 'select', metEnValeurZone);
+
+}
+
+//On va ajouter un listener sur la courbe qui permettra de mettre en valeur la zone correspondante
+
+
+
+function metEnValeurZone(){
+	var zoneMV = line.getSelection()[0];
+	if(zoneMV){
+		//On va récupérer le nom de ma ville
+		metEnValeur(dataTableGraphe.getValue(zoneMV.row, 0));
+	}else
+		return
+}
+
+function metEnValeur(zoneMV){
+	//Nous allons ensuite récuperer la layer a partir de la ville
+
+	//Remise a zero si non null
+	if(layer){
+		geoDep.resetStyle(layer)
+	}
+	for( var index in geoDep._layers){
+		layer = geoDep._layers[index];
+		//Nous récuperons ensuite le layer correpondant a la ville cliqué
+		if(layer.feature.properties.Name == zoneMV)
+			break;
+	}
+
+	//Nous allons ensuite la mettre en valeur
+	layer.setStyle({
+		fillOpacity: 1,
+		color: "#000"
+	});
+
 }
 
 //Dessine le bubble chart
@@ -313,6 +351,7 @@ function afficherTableauDeBord(){
 	document.getElementById("tooltip").style.visibility = "hidden";
 	//On remet à jour les 
 	document.getElementById("choix").children[0].checked = true;
+
 	document.getElementById("choixUser").style.display = "";
 	afficherPie();
 
