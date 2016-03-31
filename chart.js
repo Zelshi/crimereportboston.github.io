@@ -277,7 +277,7 @@ function afficherBubble() {
 	};
 
 	chartBubble = new google.visualization.BubbleChart(document.getElementById('choixUser'));
-	chartBubble.draw(dataBubbleChart, options);
+	chartBubble.draw(dataBubbleChart, optionsBubble);
 }
 
 //Création du graphique du tooltip
