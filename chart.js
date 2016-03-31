@@ -15,7 +15,7 @@ var chartBubble;
 var columnChart;
 var line;
 var Monday = new Array(59);
-var layer;
+var layerLine;
 
 for (j=0;j<59;j++) {
 	Monday[j]=0;
@@ -285,18 +285,18 @@ function metEnValeur(zoneMV){
 	//Nous allons ensuite récuperer la layer a partir de la ville
 
 	//Remise a zero si non null
-	if(layer){
-		geoDep.resetStyle(layer)
+	if(layerLine){
+		geoDep.resetStyle(layerLine)
 	}
 	for( var index in geoDep._layers){
-		layer = geoDep._layers[index];
+		layerLine = geoDep._layers[index];
 		//Nous récuperons ensuite le layer correpondant a la ville cliqué
-		if(layer.feature.properties.Name == zoneMV)
+		if(layerLine.feature.properties.Name == zoneMV)
 			break;
 	}
 
 	//Nous allons ensuite la mettre en valeur
-	layer.setStyle({
+	layerLine.setStyle({
 		fillOpacity: 1,
 		color: "#000"
 	});
